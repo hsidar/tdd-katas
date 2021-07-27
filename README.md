@@ -66,24 +66,24 @@ npm test
 # SCHEMA
 
 User
-id : integer
-username: varchar
-avatar: url
-createdAt: timestamp
-updatedAt: timestamp
+- id : integer
+- username: varchar
+- avatar: url
+- createdAt: timestamp
+- updatedAt: timestamp
 
 -- if on no-sql DB --
 followedUsers integer[]
 
 Messages
-id: integer
-userId: integer
-message: varchar
-createdAt: timestamp
-updatedAt: timestamp
+- id: integer
+- userId: integer
+- message: varchar
+- createdAt: timestamp
+- updatedAt: timestamp
 
 -- if on relational DB --
 Follows
-id: integer
-followingUserId: integer
-followedUserId: integer
+- id: integer
+- followingUserId: integer
+- followedUserId: integer
