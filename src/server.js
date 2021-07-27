@@ -1,20 +1,89 @@
 import express from "express";
-import { endpointConstants } from "./constants";
-import {
-    mockAggregateTimeline,
-    mockMessage1,
-    mockTimelineUser1,
-    mockUpdatedFollows,
-  } from "./__mocks__";
+import { endpointConstants, errorMessageConstants } from "./constants";
+import messageService from "./services/messageService/messageService";
+import timelineService from "./services/timelineService";
+import userService from "./services/userService";
+import mockMessages from "./__mocks__/mockMessages";
 
-const { timeline, message, follow, publish } = endpointConstants;
+// setup variables
+const {
+  timelineEndpoint,
+  messageEndpoint,
+  followEndpoint,
+  publishEndpoint,
+} = endpointConstants;
+const {
+  timelineError,
+  messageError,
+  followError,
+  publishError,
+} = endpointConstants;
+const userId = 1; // realistically, we would get this detail from the session per request
 const server = express();
 
-server.get("/", (req, res) => { res.send(mockAggregateTimeline); });
-server.get(`/${timeline}`, (req, res) => { res.send(mockAggregateTimeline); });
-server.get(`/${timeline}/:id`, (req, res) => { res.send(mockTimelineUser1); });
-server.get(`/${message}/:id`, (req, res) => { res.send(mockMessage1); });
-server.post(`/${follow}`, (req, res) => { res.send(mockUpdatedFollows); });
-server.post(`/${publish}`, (req, res) => { res.send(true); });
+// routes
+server.get(["/", `/${timelineEndpoint}`], (req, res) => {
+  try {
+    const userTimeline = timelineService.getAggregate(userId);
+    res.send(userTimeline);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      message: timelineError,
+    });
+  }
+});
+
+server.get(`/${timelineEndpoint}/:id`, (req, res) => {
+  const id = +req.params.id;
+  try {
+    const userTimeline = timelineService.get(id);
+    res.send(userTimeline);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      message: timelineError,
+    });
+  }
+});
+
+server.get(`/${messageEndpoint}/:id`, (req, res) => {
+  const id = +req.params.id;
+  try {
+    const message = messageService.get(id, userId);
+    res.send(message);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      message: messageError,
+    });
+  }
+});
+
+server.post(`/${followEndpoint}`, (req, res) => {
+  try {
+    const userIdToFollow = +req.query.id;
+    const updatedFollows = userService.updateFollows(userId, userIdToFollow);
+    res.send(updatedFollows);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      message: followError,
+    });
+  }
+});
+
+server.post(`/${publishEndpoint}`, (req, res) => {
+  try {
+    const message = req.query.message;
+    messageService.insertMessage(userId, message);
+    res.send(true);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      message: publishError,
+    });
+  }
+});
 
 export default server;

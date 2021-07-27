@@ -1,9 +1,9 @@
 export default {
   id: 1,
   publishedBy: {
-    userName: "",
+    username: "Alice",
     avatar: "",
   },
-  message: "",
-  timestamp: "",
+  body: "I love the weather today.",
+  timestamp: 1572393600000,
 };

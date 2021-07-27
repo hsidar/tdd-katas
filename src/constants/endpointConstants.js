@@ -1,6 +1,6 @@
 export default {
-  timeline: "timeline",
-  message: "message",
-  follow: "follow",
-  publish: "publish",
+  timelineEndpoint: "timeline",
+  messageEndpoint: "message",
+  followEndpoint: "follow",
+  publishEndpoint: "publish",
 };
